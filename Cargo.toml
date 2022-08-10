@@ -5,15 +5,15 @@ authors = ["Armando Perez <gmandx@gmail.com>"]
 edition = "2018"
 
 [dependencies]
-atty = "^0.2"
-clap = "^2"
-console = "^0.10"
-crossbeam = "^0.7"
-num_cpus = "^1"
-sqlite = "^0.25"
-walkdir = "^2"
-thiserror = "^1"
-anyhow = "^1"
+atty = "0.2.14"
+clap = "2.33.3"
+console = "0.15.0"
+crossbeam = "0.8.1"
+num_cpus = "1.13.0"
+sqlite = "0.26.0"
+walkdir = "2.3.2"
+thiserror = "1.0.30"
+anyhow = "1.0.45"
 
 [profile.release]
 lto = true
