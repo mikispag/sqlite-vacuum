@@ -71,7 +71,6 @@ fn start_threads(
 
 fn start_walking(
     directories: HashMap<String, PathBuf>,
-    aggresive: bool,
     status_sender: Sender<Status>,
     file_sender: Sender<SQLiteFile>,
 ) -> JoinHandle<()> {
@@ -103,7 +102,7 @@ fn start_walking(
                 .filter_map(|item| match item {
                     Ok(entry) => {
                         let path = entry.path();
-                        match SQLiteFile::load(path, aggresive) {
+                        match SQLiteFile::load(path) {
                             Ok(Some(db_file)) => Some(db_file),
                             Ok(None) => None,
                             Err(error) => {
@@ -150,7 +149,6 @@ fn main() {
         let mut threads = start_threads(file_receiver, status_sender.clone());
         threads.push(start_walking(
             args.directories.clone(),
-            args.aggresive,
             status_sender,
             file_sender,
         ));
