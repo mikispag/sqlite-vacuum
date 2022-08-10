@@ -44,7 +44,7 @@ impl SQLiteFile {
         &self.path
     }
 
-    pub fn load(path: &Path, aggresive: bool) -> Result<Option<Self>, AppError> {
+    pub fn load(path: &Path) -> Result<Option<Self>, AppError> {
         let io_error_context = AppError::io_error_wraper(path);
         let file_metadata = metadata(path).map_err(io_error_context)?;
 
@@ -60,24 +60,17 @@ impl SQLiteFile {
             return Ok(None);
         }
 
-        if aggresive {
-            let file = File::open(path).map_err(io_error_context)?;
-            for (read_byte, magic_byte) in BufReader::with_capacity(SQLITE_MAGIC.len(), file)
-                .bytes()
-                .zip(SQLITE_MAGIC.iter())
-            {
-                if read_byte.map_err(io_error_context)? != *magic_byte {
-                    return Ok(None);
-                }
-            }
-
-            Ok(Some(Self::new(path)))
-        } else {
-            match path.extension().and_then(|ext| ext.to_str()) {
-                Some("db") | Some("sqlite") => Ok(Some(Self::new(path))),
-                _ => Ok(None),
+        let file = File::open(path).map_err(io_error_context)?;
+        for (read_byte, magic_byte) in BufReader::with_capacity(SQLITE_MAGIC.len(), file)
+            .bytes()
+            .zip(SQLITE_MAGIC.iter())
+        {
+            if read_byte.map_err(io_error_context)? != *magic_byte {
+                return Ok(None);
             }
         }
+
+        Ok(Some(Self::new(path)))
     }
 
     pub fn vacuum(&self) -> Result<VacuumResult, AppError> {

@@ -5,7 +5,6 @@ use clap::{App, Arg, Error as ArgsError, ErrorKind as ArgsErrorKind};
 #[derive(Debug)]
 pub struct Arguments {
     pub directories: HashMap<String, PathBuf>,
-    pub aggresive: bool,
 }
 
 impl Arguments {
@@ -18,14 +17,6 @@ impl Arguments {
                     .takes_value(true)
                     .help("Sets the directories to walk")
                     .required(true),
-            )
-            .arg(
-                Arg::with_name("aggresive")
-                    .short("a")
-                    .long("aggresive")
-                    .help("Inspect the file's header to check if it is a SQLite database, instead of just checking the extension (which is faster, but it can lead to false positives).")
-                    .takes_value(false)
-                    .required(false)
             );
 
         let matches = app.get_matches_safe()?;
@@ -47,11 +38,8 @@ impl Arguments {
             m
         };
 
-        let aggresive = matches.is_present("aggresive");
-
         Ok(Self {
             directories,
-            aggresive,
         })
     }
 }
